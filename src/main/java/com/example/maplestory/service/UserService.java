@@ -1,8 +1,6 @@
 package com.example.maplestory.service;
 
-import com.example.maplestory.domain.dao.UserRepository;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.maplestory.domain.dto.UserOcid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -11,16 +9,11 @@ import org.springframework.stereotype.Service;
 @PropertySource("classpath:config.properties")
 public class UserService {
     @Value("${API_KEY}")
-    private String api_key;
+    private String API_KEY;
 
-    private final UserRepository userRepository;
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    public UserOcid getUserId() {
+        UserOcid user = new UserOcid();
 
-    public String userOcid(String characName){
-        String user_id = userRepository.getOcid(api_key, characName);
-        return user_id;
+        return user;
     }
 }
