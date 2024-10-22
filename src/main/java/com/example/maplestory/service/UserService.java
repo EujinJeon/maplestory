@@ -38,8 +38,9 @@ public class UserService {
                 .queryParam("character_name", character_name);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.ACCEPT, "application/json");
-        headers.set("x-nxopen-api-key", API_KEY);
+        headers.add("x-nxopen-api-key", API_KEY);
+
+        System.out.println(headers);
 
         HttpEntity<?> httpEntity = new HttpEntity<>(headers);
         return restTemplate.exchange(builder.toUriString(), HttpMethod.GET, httpEntity, UserOcid.class).getBody();
