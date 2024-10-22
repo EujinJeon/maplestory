@@ -7,8 +7,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Service
@@ -17,6 +22,8 @@ public class UserService {
     @Value("${API_KEY}")
     private String API_KEY;
 
+    @Value("${APIURL}")
+    private String APIURL;
 
     private final RestTemplate restTemplate;
 
@@ -24,9 +31,17 @@ public class UserService {
         restTemplate = builder.build();
     }
 
-    public UserOcid getUserId() {
+    public UserOcid getUserId(String character_name) {
         UserOcid user = new UserOcid();
+        String url = APIURL + "maplestory/v1/id";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("character_name", character_name);
 
-        return user;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.ACCEPT, "application/json");
+        headers.set("x-nxopen-api-key", API_KEY);
+
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+        return restTemplate.exchange(builder.toUriString(), HttpMethod.GET, httpEntity, UserOcid.class).getBody();
     }
 }

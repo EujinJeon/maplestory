@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 public class UserOcid {
-    String userocid;
+    String ocid;
 }
