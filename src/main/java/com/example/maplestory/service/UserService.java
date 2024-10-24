@@ -22,7 +22,7 @@ public class UserService {
     @Value("${API_KEY}")
     private String API_KEY;
 
-    @Value("${APIURL}")
+    @Value("${API_URL}")
     private String APIURL;
 
     private final RestTemplate restTemplate;
@@ -33,16 +33,20 @@ public class UserService {
 
     public UserOcid getUserId(String character_name) {
         UserOcid user = new UserOcid();
-        String url = APIURL + "maplestory/v1/id";
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("character_name", character_name);
+        String path = "maplestory/v1/id";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(APIURL)
+                .path(path)
+                .queryParam("character_name", character_name)
+                .encode();
+
+        System.out.println(builder.toUriString());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-nxopen-api-key", API_KEY);
 
         System.out.println(headers);
 
-        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+        HttpEntity<UserOcid> httpEntity = new HttpEntity<>(headers);
         return restTemplate.exchange(builder.toUriString(), HttpMethod.GET, httpEntity, UserOcid.class).getBody();
     }
 }
