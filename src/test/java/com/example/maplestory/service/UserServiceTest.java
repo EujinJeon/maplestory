@@ -13,7 +13,7 @@ public class UserServiceTest {
     @Test
     public void getUserIdTest() {
         UserOcid user = new UserOcid();
-        String character_name = "금쪽이핸들러";
+        String character_name = "삼한제일검사";
         user = userService.getUserId(character_name);
         System.out.println(user.getOcid());
     }

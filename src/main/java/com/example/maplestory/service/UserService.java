@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+
 @Slf4j
 @Service
 @PropertySource("classpath:config.properties")
@@ -23,7 +25,7 @@ public class UserService {
     private String API_KEY;
 
     @Value("${API_URL}")
-    private String APIURL;
+    private String API_URL;
 
     private final RestTemplate restTemplate;
 
@@ -34,19 +36,18 @@ public class UserService {
     public UserOcid getUserId(String character_name) {
         UserOcid user = new UserOcid();
         String path = "maplestory/v1/id";
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(APIURL)
+
+        URI uri = UriComponentsBuilder.fromUriString(API_URL)
                 .path(path)
                 .queryParam("character_name", character_name)
-                .encode();
-
-        System.out.println(builder.toUriString());
+                .encode()
+                .build()
+                .toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-nxopen-api-key", API_KEY);
 
-        System.out.println(headers);
-
-        HttpEntity<UserOcid> httpEntity = new HttpEntity<>(headers);
-        return restTemplate.exchange(builder.toUriString(), HttpMethod.GET, httpEntity, UserOcid.class).getBody();
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+        return restTemplate.exchange(uri, HttpMethod.GET, httpEntity, UserOcid.class).getBody();
     }
 }
