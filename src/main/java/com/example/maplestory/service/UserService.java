@@ -1,6 +1,7 @@
 package com.example.maplestory.service;
 
 import com.example.maplestory.domain.dao.UserRepository;
+import com.example.maplestory.domain.dto.CharacterBasic;
 import com.example.maplestory.domain.dto.User;
 import com.example.maplestory.domain.dto.UserID;
 import lombok.extern.slf4j.Slf4j;
@@ -60,12 +61,16 @@ public class UserService {
                     .build()
                     .toUri();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("x-nxopen-api-key", API_KEY);
+            try {
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("x-nxopen-api-key", API_KEY);
 
-            HttpEntity<?> httpEntity = new HttpEntity<>(headers);
-            userID = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, UserID.class).getBody();
-
+                HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+                userID = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, UserID.class).getBody();
+            }
+            catch (Exception e) {
+                return e.toString();
+            }
             User new_user = new User();
             new_user.setOcid(userID.getOcid());
             new_user.setCharacterName(character_name);
@@ -74,5 +79,21 @@ public class UserService {
 
             return userID.getOcid();
         }
+    }
+
+    public CharacterBasic getCharacterBasic(String character_name, String date) {
+        String ocid = getUserId(character_name);
+        CharacterBasic characterBasic = new CharacterBasic();
+
+        String path = "maplestory/v1/character/basic";
+        URI uri = UriComponentsBuilder.fromUriString(API_URL)
+                .path(path)
+                .queryParam("ocid", ocid)
+                .queryParam("date", date)
+                .encode()
+                .build()
+                .toUri();
+
+        return characterBasic;
     }
 }
